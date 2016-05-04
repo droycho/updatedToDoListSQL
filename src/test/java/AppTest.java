@@ -1,5 +1,6 @@
 import org.sql2o.*;
 import org.junit.*;
+import static org.junit.Assert.*;
 import org.fluentlenium.adapter.FluentTest;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -36,17 +37,15 @@ public void tearDown() {
   @Test
   public void rootTest() {
     goTo("http://localhost:4567/");
-    assertThat(pageSource()).contains("Todo list!");
-    assertThat(pageSource()).contains("View Category List");
-    assertThat(pageSource()).contains("Add a new category");
+    assertThat(pageSource()).contains("To Do List!");
   }
 
   @Test
   public void categoryIsCreatedTest() {
     goTo("http://localhost:4567/");
-    click("a", withText("Add a new category"));
+
     fill("#name").with("Household chores");
-    submit(".btn");
+    submit("#catBtn");
     assertThat(pageSource()).contains("Your category has been saved.");
   }
 
@@ -107,6 +106,30 @@ public void tearDown() {
     click("a", withText("Clean"));
     assertThat(pageSource()).contains("Clean");
     assertThat(pageSource()).contains("Return to Home");
+  }
+  @Test
+  public void taskUpdate() {
+    Category myCategory = new Category("Home");
+    myCategory.save();
+    Task myTask = new Task("Clean", myCategory.getId());
+    myTask.save();
+    String taskPath = String.format("http://localhost:4567/categories/%d/tasks/%d", myCategory.getId(), myTask.getId());
+    goTo(taskPath);
+    fill("#description").with("Dance");
+    submit("#update-task");
+    assertThat(pageSource()).contains("Dance");
+  }
+
+  @Test
+  public void taskDelete() {
+    Category myCategory = new Category("Home");
+    myCategory.save();
+    Task myTask = new Task("Clean", myCategory.getId());
+    myTask.save();
+    String taskPath = String.format("http://localhost:4567/categories/%d/tasks/%d", myCategory.getId(), myTask.getId());
+    goTo(taskPath);
+    submit("#delete-task");
+    assertEquals(0, Task.all().size());
   }
 
 }
