@@ -37,4 +37,4 @@ _To contact, leave a comment on Github._
 
 *MIT License*
 
-Copyright (c) 2016 **_Ryan Carlile_**
+Copyright (c) 2016 **_DJ Roychoudhury_**
