@@ -6,10 +6,12 @@ public class Task {
   private int id;
   private String description;
   private Boolean completed;
+  private String dueDate;
 
-  public Task(String description) {
+  public Task(String description, String dueDate) {
     this.description = description;
     this.completed = false;
+    this.dueDate = dueDate;
   }
 
   public String getDescription() {
@@ -24,9 +26,27 @@ public class Task {
     return completed;
   }
 
+  public String getDueDate() {
+    return dueDate;
+  }
+
   public static List<Task> all() {
-    String sql = "SELECT id, description FROM tasks";
+    String sql = "SELECT * FROM tasks";
     try(Connection con = DB.sql2o.open()) {
+      return con.createQuery(sql).executeAndFetch(Task.class);
+    }
+  }
+
+  public static List<Task> allCompleted() {
+    String sql = "SELECT * FROM tasks WHERE completed = TRUE;";
+    try(Connection con = DB.sql2o.open()){
+      return con.createQuery(sql).executeAndFetch(Task.class);
+    }
+  }
+
+  public static List<Task> allIncomplete() {
+    String sql = "SELECT * FROM tasks WHERE completed = FALSE ORDER BY dueDate;";
+    try(Connection con = DB.sql2o.open()){
       return con.createQuery(sql).executeAndFetch(Task.class);
     }
   }
@@ -44,10 +64,11 @@ public class Task {
 
   public void save() {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "INSERT INTO tasks(description, completed) VALUES (:description, :completed)";
+      String sql = "INSERT INTO tasks(description, completed, dueDate) VALUES (:description, :completed, :dueDate)";
       this.id = (int) con.createQuery(sql, true)
         .addParameter("description", this.description)
         .addParameter("completed", this.completed)
+        .addParameter("dueDate", this.dueDate)
         .executeUpdate()
         .getKey();
     }
@@ -63,12 +84,13 @@ public class Task {
     }
   }
 
-  public void update(String description, Boolean completed) {
+  public void update(String description, Boolean completed, String dueDate) {
     try(Connection con = DB.sql2o.open()) {
-      String sql = "UPDATE tasks SET description = :description, completed = :completed WHERE id = :id";
+      String sql = "UPDATE tasks SET description = :description, completed = :completed, dueDate = :dueDate WHERE id = :id";
       con.createQuery(sql)
         .addParameter("description", description)
         .addParameter("completed", completed)
+        .addParameter("dueDate", dueDate)
         .addParameter("id", id)
         .executeUpdate();
     }

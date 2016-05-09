@@ -75,7 +75,7 @@ public class TaskTest {
   public void update_updatesTaskDescription_true() {
     Task myTask = new Task("Mow the lawn");
     myTask.save();
-    myTask.update("Take a nap");
+    myTask.update("Take a nap", true);
     assertEquals("Take a nap", Task.find(myTask.getId()).getDescription());
   }
 
@@ -112,6 +112,12 @@ public class TaskTest {
     assertEquals(1, savedCategories.size());
   }
 
-
-
+  @Test
+  public void allCompleted_returnsAllCompleted_tasks(){
+    Task myTask = new Task("Mow the Lawn");
+    myTask.save();
+    myTask.update("Mow the Lawn", true);
+    List<Task> allCompleted = Task.allCompleted();
+    assertEquals(1, allCompleted.size());
+  }
 }

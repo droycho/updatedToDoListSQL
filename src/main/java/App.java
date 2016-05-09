@@ -28,7 +28,8 @@ public class App {
 
     get("/tasks", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
-      model.put("tasks", Task.all());
+      model.put("tasksComplete", Task.allCompleted());
+      model.put("tasksIncomplete", Task.allIncomplete());
       model.put("template", "templates/tasks.vtl");
       return new ModelAndView(model, layout);
     }, new VelocityTemplateEngine());
@@ -36,7 +37,8 @@ public class App {
     post("/tasks", (request, response) -> {
       HashMap<String, Object> model = new HashMap<String, Object>();
       String description = request.queryParams("description");
-      Task newTask = new Task(description);
+      String dueDate = request.queryParams("dueDate");
+      Task newTask = new Task(description, dueDate);
       newTask.save();
       response.redirect("/tasks");
       return null;
@@ -127,7 +129,8 @@ public class App {
       Task task = Task.find(Integer.parseInt(request.params("id")));
       Boolean completedUpdate = Boolean.valueOf(request.queryParams("editCompleted"));
       String descriptionUpdate = request.queryParams("editDescription");
-      task.update(descriptionUpdate, completedUpdate);
+      String dueDateUpdate = request.queryParams("editDueDate");
+      task.update(descriptionUpdate, completedUpdate, dueDateUpdate);
       response.redirect("/tasks/" + Integer.parseInt(request.params("id")));
       return null;
     });
