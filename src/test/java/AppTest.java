@@ -72,7 +72,7 @@ public class AppTest extends FluentTest {
 
   @Test
   public void taskShowPageDisplaysDescription() {
-    Task testTask = new Task("Mow the lawn");
+    Task testTask = new Task("Mow the lawn", "2016-05-25");
     testTask.save();
     String url = String.format("http://localhost:4567/tasks/%d", testTask.getId());
     goTo(url);
@@ -83,7 +83,7 @@ public class AppTest extends FluentTest {
   public void taskIsAddedToCategory() {
     Category testCategory = new Category("Household chores");
     testCategory.save();
-    Task testTask = new Task("Mow the lawn");
+    Task testTask = new Task("Mow the lawn", "2016-05-25");
     testTask.save();
     String url = String.format("http://localhost:4567/categories/%d", testCategory.getId());
     goTo(url);
@@ -97,7 +97,7 @@ public class AppTest extends FluentTest {
   public void categoryIsAddedToTask() {
     Category testCategory = new Category("Household chores");
     testCategory.save();
-    Task testTask = new Task("Mow the lawn");
+    Task testTask = new Task("Mow the lawn", "2016-05-25");
     testTask.save();
     String url = String.format("http://localhost:4567/tasks/%d", testTask.getId());
     goTo(url);

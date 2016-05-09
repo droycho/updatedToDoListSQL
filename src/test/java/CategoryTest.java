@@ -74,7 +74,7 @@ public class CategoryTest {
   public void getTasks_returnsAllTasks_List() {
     Category myCategory = new Category("Household chores");
     myCategory.save();
-    Task myTask = new Task("Mow the lawn");
+    Task myTask = new Task("Mow the lawn", "2016-05-25");
     myTask.save();
     myCategory.addTask(myTask);
     List savedTasks = myCategory.getTasks();
@@ -85,7 +85,7 @@ public class CategoryTest {
   public void addTask_addsTaskToCategory_true() {
     Category myCategory = new Category("Household chores");
     myCategory.save();
-    Task myTask = new Task("Mow the lawn");
+    Task myTask = new Task("Mow the lawn", "2016-05-25");
     myTask.save();
     myCategory.addTask(myTask);
     Task savedTask = myCategory.getTasks().get(0);
@@ -96,7 +96,7 @@ public class CategoryTest {
   public void delete_deletesAllTasksAndCategoriesAssociations() {
     Category myCategory = new Category("Household chores");
     myCategory.save();
-    Task myTask = new Task("Mow the lawn");
+    Task myTask = new Task("Mow the lawn", "2016-05-25");
     myTask.save();
     myCategory.addTask(myTask);
     myCategory.delete();
