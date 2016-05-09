@@ -2,6 +2,7 @@ import org.sql2o.*;
 import org.junit.*;
 import static org.junit.Assert.*;
 import java.util.Arrays;
+import java.util.List;
 
 public class CategoryTest {
 
@@ -15,8 +16,10 @@ public class CategoryTest {
     try(Connection con = DB.sql2o.open()) {
       String deleteTasksQuery = "DELETE FROM tasks *;";
       String deleteCategoriesQuery = "DELETE FROM categories *;";
+      String deleteCategoriesTasksQuery = "DELETE FROM categories_tasks *;";
       con.createQuery(deleteTasksQuery).executeUpdate();
       con.createQuery(deleteCategoriesQuery).executeUpdate();
+      con.createQuery(deleteCategoriesTasksQuery).executeUpdate();
     }
   }
 
@@ -68,14 +71,27 @@ public class CategoryTest {
   }
 
   @Test
-  public void getTasks_retrievesALlTasksFromDatabase_tasksList() {
+  public void getTasks_returnsAllTasks_List() {
     Category myCategory = new Category("Household chores");
     myCategory.save();
-    Task firstTask = new Task("Mow the lawn", myCategory.getId());
-    firstTask.save();
-    Task secondTask = new Task("Do the dishes", myCategory.getId());
-    secondTask.save();
-    Task[] tasks = new Task[] { firstTask, secondTask };
-    assertTrue(myCategory.getTasks().containsAll(Arrays.asList(tasks)));
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myCategory.addTask(myTask);
+    List savedTasks = myCategory.getTasks();
+    assertEquals(1, savedTasks.size());
   }
+
+  @Test
+  public void addTask_addsTaskToCategory_true() {
+    Category myCategory = new Category("Household chores");
+    myCategory.save();
+    Task myTask = new Task("Mow the lawn");
+    myTask.save();
+    myCategory.addTask(myTask);
+    Task savedTask = myCategory.getTasks().get(0);
+    assertTrue(myTask.equals(savedTask));
+  }
+
+
+
 }
